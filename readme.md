@@ -15,6 +15,7 @@ filler-counter -h
 Example output:
 
 ```
+$ filler-counter naruto not-real-one
 naruto:
     Filler count:    94
     Canon count:    126
