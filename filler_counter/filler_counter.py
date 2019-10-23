@@ -111,6 +111,9 @@ def episode_bottom_limit(episodes_chunks, bottom_limit, negate=False):
 
 def get_count(soup, div_class, lower=None, upper=None):
     containing_div = soup.find('div', {'class': div_class})
+    if containing_div is None:
+        return 0
+
     episodes_span = containing_div.find('span', {'class': 'Episodes'})
     episodes_text = episodes_span.text
     episode_chunks = episodes_text.split(', ')
@@ -146,6 +149,8 @@ def process_name(name):
             lower, upper = rest
         else:
             raise ValueError("Must be name:lower:upper.")
+    else:
+        lower, upper = None, None
 
     url = URL_FORMAT.format(name)
 
@@ -160,12 +165,14 @@ def process_name(name):
     soup = BeautifulSoup(data, 'html.parser')
 
     filler_count = get_count(soup, 'filler', lower, upper)
-    canon_count = get_count(soup, 'canon', lower, upper)
-    total_count = filler_count + canon_count
+    canon_count = get_count(soup, 'manga_canon', lower, upper)
+    mixed_count = get_count(soup, 'mixed_canon/filler', lower, upper)
+    total_count = filler_count + canon_count + mixed_count
 
     print('{}:'.format(name))
     print('\tFiller count:\t{}'.format(filler_count))
     print('\tCanon count:\t{}'.format(canon_count))
+    print('\tMixed count:\t{}'.format(mixed_count))
     print('\tTotal count:\t{}'.format(total_count))
     postamble()
 
